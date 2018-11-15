@@ -1,133 +1,29 @@
-// Global variables for GoogleAuth object, auth status.
-var GoogleAuth;
+const API_KEY = "AIzaSyBCVesxm4Kuui6ID14HPwDSYETR9CJeZ54"
+const YT_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet"
 
-/**
- * Load the API's client and auth2 modules.
- * Call the initClient function after the modules load.
- */
-function handleClientLoad() {
-    gapi.load('client:auth2', initClient);
-}
+//&q=%221roy4o4tqQM%22&key=AIzaSyBCVesxm4Kuui6ID14HPwDSYETR9CJeZ54
 
-function initClient() {
-    // Initialize the gapi.client object, which app uses to make API requests.
-    // 'scope' field specifies space-delimited list of access scopes
+$("document").ready(function(){
+    $("form").submit(function(event){
+        event.preventDefault();
+        var searchQuery = "&q="+$("#mySearch").val();
 
-    gapi.client.init({
-        'clientId': 'REPLACE_ME',
-        'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest'],
-        'scope': 'https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner'
-    }).then(function () {
-        GoogleAuth = gapi.auth2.getAuthInstance();
-
-        // Listen for sign-in state changes.
-        GoogleAuth.isSignedIn.listen(updateSigninStatus);
-
-        // Handle initial sign-in state. (Determine if user is already signed in.)
-        setSigninStatus();
-
-        // Call handleAuthClick function when user clicks on "Authorize" button.
-        $('#execute-request-button').click(function () {
-            handleAuthClick(event);
+        $.ajax({
+            url: YT_URL + searchQuery + "&key=" + API_KEY,
+            method: "GET"
+        }).then(function(response){
+            
+            var videoDisp = $("<iframe allowfullscreen>");
+            videoDisp.attr("width",560);
+            videoDisp.attr("height",315);
+            videoDisp.attr("src","https://www.youtube.com/embed/"+response.items[0].id.videoId);
+            videoDisp.attr("frameborder",0);
+            videoDisp.attr("allow","accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
+            
+            $("#video_display").append(videoDisp);
         });
     });
-}
+});
 
-function handleAuthClick(event) {
-    // Sign user in after click on auth button.
-    GoogleAuth.signIn();
-}
 
-function setSigninStatus() {
-    var user = GoogleAuth.currentUser.get();
-    isAuthorized = user.hasGrantedScopes('https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner');
-    // Toggle button text and displayed statement based on current auth status.
-    if (isAuthorized) {
-        defineRequest();
-    }
-}
-
-function updateSigninStatus(isSignedIn) {
-    setSigninStatus();
-}
-
-function createResource(properties) {
-    var resource = {};
-    var normalizedProps = properties;
-    for (var p in properties) {
-        var value = properties[p];
-        if (p && p.substr(-2, 2) == '[]') {
-            var adjustedName = p.replace('[]', '');
-            if (value) {
-                normalizedProps[adjustedName] = value.split(',');
-            }
-            delete normalizedProps[p];
-        }
-    }
-    for (var p in normalizedProps) {
-        // Leave properties that don't have values out of inserted resource.
-        if (normalizedProps.hasOwnProperty(p) && normalizedProps[p]) {
-            var propArray = p.split('.');
-            var ref = resource;
-            for (var pa = 0; pa < propArray.length; pa++) {
-                var key = propArray[pa];
-                if (pa == propArray.length - 1) {
-                    ref[key] = normalizedProps[p];
-                } else {
-                    ref = ref[key] = ref[key] || {};
-                }
-            }
-        };
-    }
-    return resource;
-}
-
-function removeEmptyParams(params) {
-    for (var p in params) {
-        if (!params[p] || params[p] == 'undefined') {
-            delete params[p];
-        }
-    }
-    return params;
-}
-
-function executeRequest(request) {
-    request.execute(function (response) {
-        console.log(response);
-    });
-}
-
-function buildApiRequest(requestMethod, path, params, properties) {
-    params = removeEmptyParams(params);
-    var request;
-    if (properties) {
-        var resource = createResource(properties);
-        request = gapi.client.request({
-            'body': resource,
-            'method': requestMethod,
-            'path': path,
-            'params': params
-        });
-    } else {
-        request = gapi.client.request({
-            'method': requestMethod,
-            'path': path,
-            'params': params
-        });
-    }
-    executeRequest(request);
-}
-
-function defineRequest() {
-    buildApiRequest('GET',
-        '/youtube/v3/search',
-        {
-            'maxResults': '5',
-            'part': 'snippet',
-            'q': $("#search-term")
-                .val()
-                .trim(),
-            'type': ''
-        });
-
-}
+//<iframe width="560" height="315" src="https://www.youtube.com/embed/u0pinrXp2LQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
