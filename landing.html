@@ -9,32 +9,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/style2.css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Raleway" rel="stylesheet">
     <script src="assets/logic.js"></script>
 </head>
 
 <body>
+<div class="container">
 
-    <!-- <section class="image-section first"> -->
-    <div class="container">
-            <div class="search-box">
-                <h1 class="display-4">Is It Streaming?</h1>
-                <p class="lead">Where can I watch my favorite movies and TV shows?</p>
-
-                <div class="wrapper">
-                    <p>test</p>
-                    <form>
-                        <div class="searchBar">
-                            <input type="text" class="form-control" id="mySearch" placeholder="Search Movies and TV Shows">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Search</button>
-                    </form>
+    <nav class="navbar navbar-light justify-content-between" style="background-color: rgb(27, 95, 112);">
+        <a class="navbar-brand">Is It Streaming?</a>
+        <form class="form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Go</button>
+        </form>                 
+    </nav>
+    
+    <div class="row1">
+        <div class="col-md-9">
+            <div class="page-header">
+                <h1>searched: title</h1>
+            </div>
+        </div>
+        <hr> 
+        <div class="row2">
+            <div class="col-md-12" id="searchResult">
+                
                 </div>
             </div>
     </div>
-    <!-- </section> -->
+    
+</div>
+
 
 </body>
-
 </html>
